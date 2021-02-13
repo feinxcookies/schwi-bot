@@ -52,6 +52,6 @@ module.exports = {
             m+= '```'; 
             message.channel.send(m);
         
-        .catch(error => console.log(error));
+        
     }
 }
