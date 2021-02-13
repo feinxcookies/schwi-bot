@@ -1,0 +1,135 @@
+const Discord = require("discord.js");
+const client = new Discord.Client();
+
+client.config = require("./config.json"); // contains discord token and saves discord prefix
+const fs = require("fs"); // file system keke
+const secretmessage = "wow! a security flaw";
+
+// template code for reading files from a folder and interpretting each as a command
+// fs.readdir("./events/", (err, files) => {
+//   if (err) return console.error(err);
+//   files.forEach(file => {
+//     let eventFunction = require(`./events/${file}`);
+//     let eventName = file.split(".")[0];
+//     // super-secret recipe to call events with all their proper arguments *after* the `client` var.
+//     client.on(eventName, (...args) => eventFunction.run(client, ...args));
+//   });
+// });
+
+
+// init event
+client.on("ready", () => {
+// init alias => command file mapping
+
+  client.aliasMap = new Map();
+  client.commands = new Discord.Collection();
+  client.commanddir = './commands2';
+  client.commandFiles = fs.readdirSync(client.commanddir).filter(file => file.endsWith('.js'));
+  for (const file of client.commandFiles) {
+    const file_dir =  `${client.commanddir}/${file}`;
+
+    fs.watchFile(file_dir,{interval:1000}, () => {
+      
+      delete require.cache[require.resolve(file_dir)];
+      console.log(file_dir);
+      const command = require(file_dir);
+      client.commands.set(command.name, command);
+      // adds everything in the alias field of a command to the map
+      
+      command.alias.forEach((val, _) => {client.aliasMap[val] = command.name});
+      // adds the base name as well
+      client.aliasMap[command.name] = command.name;
+    }); 
+
+    const command = require(file_dir);
+    client.commands.set(command.name, command);
+    // adds everything in the alias field of a command to the map
+    command.alias.forEach((val, _) => {client.aliasMap[val] = command.name});
+    // adds the base name as well
+    client.aliasMap[command.name] = command.name;
+  }
+
+  console.log(client.aliasMap);
+  client.user.setStatus(`${client.config.prefix}help`)
+  console.log("I am ready!");
+});
+
+
+
+
+// message event
+// message is a discord.js variable
+client.on("message", (message) => {
+
+  if (!message.content.startsWith(client.config.prefix)) return; // check prefix
+
+  if (message.author.bot) {
+    if (message.author.id == 422684380100689921) {
+      message.channel.send("I don't talk to myself sorry");
+      return;
+    }
+    message.channel.send("I don't talk to other bots, sorry");
+    return;
+  }
+  //remove prefix
+  const args = message.content.slice(client.config.prefix.length).toLowerCase().trim().split(/ +/g); // splice to remove prefix, then split by spaces
+  
+  const inputCommand = args.shift().toLowerCase();
+  // s.<blank> case
+  if (inputCommand.length == 0) {
+    message.channel.send(`usage: ${prefix}<command> <args> \n for a list of commands use ${client.config.prefix}help`);
+    return;
+  }
+  
+  // try parse input command
+  if (!client.commands.has(client.aliasMap[inputCommand])) return;
+
+  try {
+    client.commands.get(client.aliasMap[inputCommand]).run(message, args, client, inputCommand);
+
+  } catch (error) {
+    console.error(error);
+   // message.channel.send(`ERROR: ${error}`);
+    
+  }
+  
+  // try {
+  //   let commandgroup = commandlist[command];
+
+  //   let modulename = `./commands/${commandgroup}.js`;
+
+  //   if (command == "reload") {
+  //     modulename = `./commands/${args[0]}.js`;
+  //     if (args[0] == "commandlist") {
+  //       delete require.cache[require.resolve('./commandlist.json')];
+  //       console.log('reloadModule: Reloading ' + './commandlist.json' + "...");
+  //       commandlist = require("./commandlist.json");
+  //       return;
+  //     }
+  //     let commandFile = reloadModule(modulename);
+  //     console.log("reload done");
+  //     return;
+  //   }
+
+  //   let commandFile = require(modulename);
+
+  //   commandFile.run(client, message, args, command, config, Discord);
+  // } catch (err) {
+  //   console.error(err);
+  // }
+//if (command === "kick") {
+//  let member = message.mentions.members.first();
+//  member.kick();
+//}
+}
+
+
+);
+
+client.login(client.config.token);
+// old
+function reloadModule(moduleName) {
+  delete require.cache[require.resolve(moduleName)];
+  console.log('reloadModule: Reloading ' + moduleName + "...");
+  return require(moduleName);
+}
