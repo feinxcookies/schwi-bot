@@ -7,10 +7,13 @@ module.exports = {
     run(message, args, client, inputCommand) {
 
         
-        if (args[0] == "") return;
-        let m1 = '';
+        
+        var m1 = '';
         m1 += message.content.slice(client.config.prefix.length + inputCommand.length).trim();
         m1 += '';
+        
+        
+        if (m1 == '') {return};
         message.channel.send(m1)
         //.then(m2 => message.delete().then(m2.delete()));
     }

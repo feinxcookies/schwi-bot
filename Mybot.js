@@ -60,9 +60,7 @@ client.on("ready", () => {
 // message event
 // message is a discord.js variable
 client.on("message", (message) => {
-
   if (!message.content.startsWith(client.config.prefix)) return; // check prefix
-
   if (message.author.bot) {
     if (message.author.id == 422684380100689921) {
       message.channel.send("I don't talk to myself sorry");
@@ -86,50 +84,14 @@ client.on("message", (message) => {
 
   try {
     client.commands.get(client.aliasMap[inputCommand]).run(message, args, client, inputCommand);
-
   } catch (error) {
     console.error(error);
    // message.channel.send(`ERROR: ${error}`);
-    
   }
-  
-  // try {
-  //   let commandgroup = commandlist[command];
-
-  //   let modulename = `./commands/${commandgroup}.js`;
-
-  //   if (command == "reload") {
-  //     modulename = `./commands/${args[0]}.js`;
-  //     if (args[0] == "commandlist") {
-  //       delete require.cache[require.resolve('./commandlist.json')];
-  //       console.log('reloadModule: Reloading ' + './commandlist.json' + "...");
-  //       commandlist = require("./commandlist.json");
-  //       return;
-  //     }
-  //     let commandFile = reloadModule(modulename);
-  //     console.log("reload done");
-  //     return;
-  //   }
-
-  //   let commandFile = require(modulename);
-
-  //   commandFile.run(client, message, args, command, config, Discord);
-  // } catch (err) {
-  //   console.error(err);
-  // }
-//if (command === "kick") {
-//  let member = message.mentions.members.first();
-//  member.kick();
-//}
 }
 
 
 );
 
 client.login(client.config.token);
-// old
-function reloadModule(moduleName) {
-  delete require.cache[require.resolve(moduleName)];
-  console.log('reloadModule: Reloading ' + moduleName + "...");
-  return require(moduleName);
-}
+

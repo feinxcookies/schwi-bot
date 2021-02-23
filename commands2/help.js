@@ -14,10 +14,11 @@ module.exports = {
                 if (command.description != '') {
                     m += "[" + command.name + "]\n";
                     m += "  description: " + command.description + "\n";
+                    m += "  aliases: " + command.alias + "\n";
                 }
             }
         } else {
-            m += "[COMMANDS] use: " + client.config.prefix + "help <command>, to get more info \n"
+           // m += "[COMMANDS] use: " + client.config.prefix + "help <command>, to get more info \n"
             for (const arg of args) {
                 let command = client.commands.get(client.aliasMap[arg]);
                 m += "[" + command.name + "]\n";

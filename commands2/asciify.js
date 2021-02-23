@@ -7,31 +7,43 @@ module.exports = {
     run(message, args, client, inputCommand) {
         const https = require('https');
         const fs = require('fs');
-        const gm = require('gm');
+        const Jimp = require('jimp');
         
         
 
         var gscale = ' ░▒▓';
+       // gscale = ' .,:+xX0$@';
         const garray = gscale.split("");
 
         var url = '';
         var w = 60;
         var h = 30;
         
-        if (message.attachments.length == 1) {
+        if (message.attachments.size == 1) {
+            
             args.unshift(message.attachments.first().url);
-
+            
         }
+        console.log(args);
         if (args.length == 3) {
             w = args[1];
             h= args[2];
         }
         url = args[0];
-        // change library OR rewrite url parsing regex
-      smol = gm(url).resize().colorspace('GRAY')
-            smol.data.forEach( (x, i) => {
+        var arr = [];
+        
+        Jimp.read(url).then( (img) => {
+            
+            img.resize(w,h).quality(60).greyscale();
+            
+            img.scan(0,0,w,h, (x,y, idx) => {
+                arr[idx] = img.bitmap.data[idx];
+            });
+            var txt = [];
+            arr.forEach( (x, i) => {
                 txt.push(garray[Math.floor(1.0 * x / 256 * garray.length)])
             });
+            
             var m = '```'; 
             var size = 0;
             for (var y = 0; y < h; y++) {
@@ -50,8 +62,9 @@ module.exports = {
                 m+= line;
             }
             m+= '```'; 
+            
             message.channel.send(m);
-        
+        });
         
     }
 }
