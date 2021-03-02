@@ -24,7 +24,7 @@ module.exports = {
         var database = readData();
         const tagsFile = 'tags.txt';
         var tagFilestr = '';
-        var tags
+        var tags;
         try {
             tagFilestr= fs.readFileSync(tagsFile,{encoding:'utf8'});
             tags = JSON.parse(tagFilestr);
@@ -50,11 +50,12 @@ module.exports = {
                 message.channel.send(`added tag: \`${args[1]}\` with data: \`${data}\` for user: \`${message.author.username}\``);
                 } else {message.channel.send("tag doesn't exist")}
             break;
-            case 'remove':
+            case 'remove': //remove your own tag
                 database.get(message.author.id).delete(args[1]);
                 writeData();
             break;
-            case 'removeuser':
+            case 'removeuser': //remove a users profile
+            if (!message.guild.member(message.author).has('MANAGE_CHANNELS')) return;
                 database.delete(message.author.id);
                 writeData();
             break;
@@ -79,6 +80,8 @@ module.exports = {
             break;
             case 'addTag':
             case 'addtag':
+                if (!message.guild.member(message.author).has('MANAGE_CHANNELS')) return;
+
                // message.channel.send('are you sure you want to add a new tag?');
 
                 if (args[1] == undefined) {
@@ -91,13 +94,18 @@ module.exports = {
             break;
             case 'removeTag':
             case 'removetag':
+                if (!message.guild.member(message.author).has('MANAGE_CHANNELS')) return;
                 tags.splice(tags.indexOf(args[1]),1);
                 saveTags();
             break;
+            case 'removeAll':
+            case 'removeall':
+                if (!message.guild.member(message.author).has('MANAGE_CHANNELS')) return;
+                tags = [];
+                break;
         }
         
         function saveTags (){
-
             var str = JSON.stringify(tags);
             fs.writeFileSync(tagsFile, str);
         }
