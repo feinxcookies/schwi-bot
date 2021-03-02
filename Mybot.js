@@ -3,6 +3,7 @@ const client = new Discord.Client();
 
 client.config = require("./config.json"); // contains discord token and saves discord prefix
 const fs = require("fs"); // file system keke
+require('dotenv').config();
 const secretmessage = "wow! a security flaw";
 
 // template code for reading files from a folder and interpretting each as a command
@@ -93,5 +94,5 @@ client.on("message", (message) => {
 
 );
 
-client.login(client.config.token);
+client.login(process.env.BOT_TOKEN);
 
