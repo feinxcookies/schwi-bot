@@ -5,7 +5,7 @@ module.exports = {
     alias:['tags'],
     description: "WIP",
     usage: "tags add",
-    example: "tags TEST 123",
+    example: "tags TEST 123 abc",
     run(message, args, client, inputCommand) {
         // tags all|list
         // tags self
