@@ -55,7 +55,7 @@ module.exports = {
                 writeData();
             break;
             case 'removeuser': //remove a users profile
-            if (!message.guild.member(message.author).has('MANAGE_CHANNELS')) return;
+            if (!message.guild.member(message.author).permissions.has('MANAGE_CHANNELS')) return;
                 database.delete(message.author.id);
                 writeData();
             break;
@@ -80,7 +80,7 @@ module.exports = {
             break;
             case 'addTag':
             case 'addtag':
-                if (!message.guild.member(message.author).has('MANAGE_CHANNELS')) return;
+                if (!message.guild.member(message.author).permissions.has('MANAGE_CHANNELS')) return;
 
                // message.channel.send('are you sure you want to add a new tag?');
 
@@ -94,17 +94,18 @@ module.exports = {
             break;
             case 'removeTag':
             case 'removetag':
-                if (!message.guild.member(message.author).has('MANAGE_CHANNELS')) return;
+                if (!message.guild.member(message.author).permissions.has('MANAGE_CHANNELS')) return;
                 tags.splice(tags.indexOf(args[1]),1);
                 saveTags();
             break;
             case 'removeAll':
             case 'removeall':
-                if (!message.guild.member(message.author).has('MANAGE_CHANNELS')) { 
+                if (!message.guild.member(message.author).permissions.has('MANAGE_CHANNELS')) { 
                     message.channel.send('error you need to be an admin to use this command');
                 }
                 tags = [];
                 break;
+                saveTags();
         }
         
         function saveTags (){
