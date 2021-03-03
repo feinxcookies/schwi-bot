@@ -100,7 +100,9 @@ module.exports = {
             break;
             case 'removeAll':
             case 'removeall':
-                if (!message.guild.member(message.author).has('MANAGE_CHANNELS')) return;
+                if (!message.guild.member(message.author).has('MANAGE_CHANNELS')) { 
+                    message.channel.send('error you need to be an admin to use this command');
+                }
                 tags = [];
                 break;
         }
