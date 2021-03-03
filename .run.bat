@@ -1,0 +1,2 @@
+set BOT_TOKEN=NDIyNjg0MzgwMTAwNjg5OTIx.Doouvg.7Bz6qQdSVThKpFqbwXM_YpZSwBA
+node bot.js

@@ -14,14 +14,14 @@ module.exports = {
            url = args[0];
         } else {
             url = message.attachments.first().url;
-        }  
+        }
         var img = ''; // 8Mb image upload size limit
         const request = https.get(url, response => {
             if (response.statusCode !== 200) {
                 reject(new Error(`Failed to get '${url}' (${response.statusCode})`));
                 return;
                 }
-        
+
                 fileInfo = {
                 mime: response.headers['content-type'],
                 size: parseInt(response.headers['content-length'], 10),
@@ -33,7 +33,7 @@ module.exports = {
                 img += chunk;
             })
                 response.on('end', () => {
-            //         fs.writeFile('img.png', img, 'base64', function (err) {
+            //         fs.writeFile('images/img.png', img, 'base64', function (err) {
             //             if (err) return console.log(err);
             //         });
                 gscaleOG = ' .\'^",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
@@ -49,7 +49,7 @@ module.exports = {
                         if (args[4] == 'space') {
                         gscale = ' ' + gscale;
                         }
-                        
+
                 const garray = gscale.split("");
                 //console.log(garray[Math.floor(128 / 256 * garray.length)]);
                 img_buf = Buffer.from(img, 'binary');
@@ -66,7 +66,7 @@ module.exports = {
                     // var smol_edge = edge.resize({width: w, height: h});
                     //console.log(smol.data);
                     var txt = [];
-                    
+
                     smol.data.forEach( (x, i) => {
                         //console.log(smol_edge.data[i]);
                         // if (smol_edge.data[i] == 255) {
@@ -74,43 +74,43 @@ module.exports = {
                         // } else {
                             txt.push(garray[Math.floor(1.0 * x / 256 * garray.length)])
                         // }
-                    
+
                     });
                     //console.log(txt);
-                    var m = '```'; 
+                    var m = '```';
                     var size = 0;
                     for (var y = 0; y < h; y++) {
                         var line = '';
                         //console.log(typeof(size),w);
                         if (size + w >= 2000) {
-                            m += '```'; 
+                            m += '```';
                             message.channel.send(m);
-                            m = '```'; 
+                            m = '```';
                             size = 0.0;
                         }
                         for (var x = 0; x < w; x++) {
-                            
+
                             line += txt[y*w + x];
                         }
                         size += w;
                         line += "\n";
                         m+= line;
                     }
-                    m+= '```'; 
+                    m+= '```';
                     message.channel.send(m);
 
-                    // fs.writeFile('smol.png', smol.toBase64('png'),'base64', function (err) {
+                    // fs.writeFile('images/smol.png', smol.toBase64('png'),'base64', function (err) {
                     //     if (err) return console.log(err);
                     // });
 
                 });
             });
-            
 
 
 
 
-            
+
+
         })
         request.end();
     }
