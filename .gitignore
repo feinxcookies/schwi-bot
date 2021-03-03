@@ -2,3 +2,6 @@ node_modules/
 .gitignore
 .env
 .env node_modules/
+
+.configuration.ini
+.run.sh
