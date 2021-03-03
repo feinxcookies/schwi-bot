@@ -4,4 +4,4 @@ node_modules/
 .env node_modules/
 
 .configuration
-.run.sh
+.run.bat
