@@ -3,5 +3,10 @@ node_modules/
 .env
 .env node_modules/
 
+<<<<<<< HEAD
 .configuration
 .run.bat
+=======
+.configuration.ini
+.run.sh
+>>>>>>> main
