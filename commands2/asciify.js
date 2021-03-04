@@ -25,11 +25,13 @@ module.exports = {
             
         }
         console.log(args);
-        if (args.length == 3) {
-            w = args[1];
-            h= args[2];
-        }
         url = args[0];
+        if (args.length == 3) {
+            url = args[2];
+            w = parseInt(args[0]);
+            h= parseInt(args[1]);
+        }
+        
         var arr = [];
         
         Jimp.read(url).then( (img) => {

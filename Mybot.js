@@ -1,22 +1,10 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
-client.config = require("./config.json"); // contains discord token and saves discord prefix
-const fs = require("fs"); // file system keke
+client.config = require("./config.json"); // contains  discord prefix
+const fs = require("fs"); // file system kek
 require('dotenv').config();
 const secretmessage = "wow! a security flaw";
-
-// template code for reading files from a folder and interpretting each as a command
-// fs.readdir("./events/", (err, files) => {
-//   if (err) return console.error(err);
-//   files.forEach(file => {
-//     let eventFunction = require(`./events/${file}`);
-//     let eventName = file.split(".")[0];
-//     // super-secret recipe to call events with all their proper arguments *after* the `client` var.
-//     client.on(eventName, (...args) => eventFunction.run(client, ...args));
-//   });
-// });
-
 
 // init event
 client.on("ready", () => {
