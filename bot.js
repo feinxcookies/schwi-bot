@@ -1,16 +1,6 @@
 const Discord = require("discord.js");
 const fs = require("fs"); // file system keke
 const secretmessage = "wow! a security flaw";
-<<<<<<< HEAD:bot.js
-
-
-const client = new Discord.Client();
-
-client.config = require("./config.json"); // contains discord token and saves discord prefix
-require('dotenv').config();
-=======
->>>>>>> 4049df16e70f32ca1ccdf479fedebd1132cf07a9:Mybot.js
-
 
 const client = new Discord.Client();
 
