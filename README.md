@@ -1,4 +1,4 @@
-![Compiling]https://github.com/feinxcookies/schwi-bot/actions/workflows/node.js.yml/badge.svg
+![Compiling](https://github.com/feinxcookies/schwi-bot/actions/workflows/node.js.yml/badge.svg)
 
 # Schwi Bot
 
