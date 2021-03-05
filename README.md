@@ -1,3 +1,5 @@
+https://github.com/feinxcookies/schwi-bot/actions/workflows/node.js.yml/badge.svg
+
 # Schwi Bot
 
 A bot made by [feinxcookies](https://github.com/feinxcookies)
