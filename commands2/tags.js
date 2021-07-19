@@ -1,4 +1,4 @@
-const {Collection, Invite} = require('discord.js');
+const {Collection, Invite, CategoryChannel} = require('discord.js');
 const {GoogleSpreadsheet} = require('google-spreadsheet');
 const { grayscale } = require('jimp');
 require('dotenv').config();
@@ -9,6 +9,7 @@ class TagManager {
     tagCount;
     tagCells;
     tagNames;
+    lowerTagNames;
     userCells;
     async init (googleSheet) {
         this.sheet = googleSheet;
@@ -28,6 +29,7 @@ class TagManager {
         }
         this.tagCells = Array.from({ length: this.tagCount}, (_,j)=>this.sheet.getCell(1,2 + j)).sort((a,b) => a.value.localeCompare(b.value));
         this.tagNames = Array.from(this.tagCells, (tagCell) => {return tagCell.value});
+        this.lowerTagNames = this.tagNames.map(function(item) { return item.toLowerCase();});
         this.userCells = Array.from({ length: this.userCount}, (_,i)=>{
             var userCell = {};
             userCell.name = this.sheet.getCell(2 + i,0);
@@ -53,7 +55,7 @@ class TagManager {
             target = this.add_user(user);
         }
         // assume tag exists
-        const index = this.tagNames.findIndex((str)=> str == tagName);
+        const index = this.lowerTagNames.findIndex((str)=> str == tagName);
         target.tags[index].value = JSON.stringify([data, ping]);
         this.save_data();
     }
@@ -69,7 +71,7 @@ class TagManager {
     }
     remove_tag_user(user, tagName) {
         var target = this.userCells.find((userCell)=>userCell.id.value == user.id);
-        const index = this.tagNames.findIndex((str)=> str == tagName);
+        const index = this.lowerTagNames.findIndex((str)=> str == tagName);
         target.tags[index].value = null;
         this.save_data();
     }
@@ -86,7 +88,7 @@ class TagManager {
         return arr;
     }
     list_users_tag (tagName) {
-        var tagIndex = this.tagCells.findIndex((tagCell)=>tagCell.value == tagName);
+        var tagIndex = this.lowerTagNames.findIndex((str)=>str == tagName);
         if (tagIndex == undefined) return undefined;
         var arr = [];
         this.userCells.forEach((user,i)=> {
@@ -158,7 +160,12 @@ module.exports = {
         /////////// commands
         switch(args[0]) {
             case 'add':
-                var category = args[1];
+                var category = args[1].toLowerCase();
+                var tagIndex = tagMgr.lowerTagNames.findIndex((str)=>str == category);
+                if (tagIndex == undefined) {
+                    message.channel.send("Category doesn't exist");
+                    break;
+                };
                 data = args[2];
                 ping = args[3];
                 if (ping == undefined) {
@@ -176,25 +183,26 @@ module.exports = {
                     break;
                 }
 
-                if (tagMgr.tagNames.includes(category)) {
+                if (tagMgr.lowerTagNames.includes(category)) {
                     if (data == "" || data == []) {data = "empty"};
                     tagMgr.add_tag_user(message.author, category, data, ping);
-                message.channel.send(`added tag: \`${category}\` with data: \`${data}\` and ping?: \`${ping}\` for user: \`${message.author.username}\``);
+                message.channel.send(`added tag: \`${tagMgr.tagCells[tagIndex].value}\` with data: \`${data}\` and ping?: \`${ping}\` for user: \`${message.author.username}\``);
                 } else {message.channel.send("Category doesn't exist")}
             break;
             case 'remove': //remove your own tag or someone elses
+                var category = args[1].toLowerCase();
                 if (args[2] != undefined) {
                     if (message.guild.member(message.author).permissions.has('MANAGE_CHANNELS')) {
-                        if (!tagMgr.tagNames.includes(args[1])) {
+                        if (!tagMgr.lowerTagNames.includes(category.toLowerCase())) {
                             message.channel.send("tag doesn't exist");
                             break;
                         }
-                        tagMgr.remove_tag_user(message.guild.members.fetch(args[2]), args[1]);
+                        tagMgr.remove_tag_user(message.guild.members.fetch(args[2]), category);
                         message.channel.send("Removed tag: `" + args[1] + "` from user: `" + args[2]);
                     } else {message.channel.send("you need to be an admin to use this command"); break;}
                 }
-                tagMgr.remove_tag_user(message.author,args[1]);
-                message.channel.send("Removed tag: `" + args[1] + "` from user: `" + message.author.name);
+                tagMgr.remove_tag_user(message.author,category);
+                message.channel.send("Removed tag: `" + category + "` from user: `" + message.author.username);
             break;
             case 'removeuser': //remove a users profile
             if (message.guild.member(message.author).permissions.has('MANAGE_CHANNELS')){
@@ -202,25 +210,26 @@ module.exports = {
             }
             break;
             case 'list':
-                var m1 = '```ini\n';
+                var m1 = '```asciidoc\n';
                 if (args[1] == undefined) {
                     m1 += "Available tags: \n";
                     tagMgr.tagNames.forEach((tagStr) => {
                         m1 += tagStr + "\n";
                     })
                 } else {
-                    var category = args[1];
-                    if (!tagMgr.tagNames.includes(category)) {
+                    var category = args[1].toLowerCase();
+                    var tagIndex = tagMgr.lowerTagNames.findIndex((str)=>str == category);
+                    if (tagIndex == undefined) {
                         message.channel.send("Category doesn't exist");
                         break;
-                    }
+                    };
                     const arr = tagMgr.list_users_tag(category);
-                    const wName = 15, wData = 10, wPing = 6;
-                    m1+= "Listing users for tag: [" + category + "]\n"
-                    m1+= "[Name]".padEnd(wName) + " " + "[Data]".padEnd(wData)+"[Ping?]"+"\n";
-                    m1+= "\n".padStart(wName + 1 + wData + wPing, '-');
+                    const wName = 15, wData = 15, wPing = 6;
+                    m1+= "[" + tagMgr.tagCells[tagIndex].value + "]\n"
+                    m1+= "Name".padEnd(wName) + " " + "Data".padEnd(wData)+"Ping?"+"\n";
+                    m1+= "\n".padStart(wName + 1 + wData + wPing, '=');
                     arr.forEach((e)=> {
-                        m1 += e.name.padEnd(wName) + " " + e.data.padEnd(wData) + e.ping + '\n';
+                        m1 += ( e.name).padEnd(wName) + " " + e.data.padEnd(wData) + e.ping + '\n';
                     })
                 }
                 m1 += '```';
@@ -242,10 +251,11 @@ module.exports = {
                     break;
                 }
                 var tags = tagMgr.list_tags_user(user);
-                var m1 = '```ini\n';
-                const wName = 15, wData = 10, wPing = 6;
-                m1+= "[Tag Name]".padEnd(wName) + " " + "[Data]".padEnd(wData)+"[Ping?]"+"\n";
-                m1+= "\n".padStart(wName + 1 + wData + wPing, '-');
+                var m1 = '```asciidoc\n';
+                const wName = 15, wData = 15, wPing = 6;
+                m1+= "["+user.username+"]\n";
+                m1+= "Tag Name".padEnd(wName) + " " + "Data".padEnd(wData)+"Ping?"+"\n";
+                m1+= "\n".padStart(wName + 1 + wData + wPing, '=');
                 tags.forEach((set) => {
                     m1 += set.name.padEnd(wName) + " " + set.data.padEnd(wData) + set.ping + '\n';
                 })
@@ -279,7 +289,7 @@ module.exports = {
                 if (!message.guild.member(message.author).permissions.has('MANAGE_CHANNELS')) {
                     message.channel.send("you need to be an admin to use this command");
                 } else if (args[1] != undefined) {
-                    if (!tagMgr.tagNames.includes(category)) {
+                    if (!tagMgr.tagNames.includes(args[1])) {
                         message.channel.send("Category doesn't exist");
                         break;
                     }
@@ -295,13 +305,14 @@ module.exports = {
                     message.channel.send("please specify a category to ping");
                     break;
                 }
-                if (!tagMgr.tagNames.includes(args[1])) {
+                var category = args[1].toLowerCase();
+                var tagIndex = tagMgr.lowerTagNames.findIndex((str)=>str == category);
+                if (tagIndex == undefined) {
                     message.channel.send("Category doesn't exist");
                     break;
-                }
-                const arr = tagMgr.list_users_tag(args[1]);
-                var m = "mentioning Category: `" + args[1] + "`: ";
-                console.log(arr);
+                };
+                const arr = tagMgr.list_users_tag(category);
+                var m = "mentioning Category: `" + tagMgr.tagCells[tagIndex].value + "`: ";
                 arr.forEach((e)=> {
                     if (e.ping == true) {
                         m += "<@" + e.id + "> ";
