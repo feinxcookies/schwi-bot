@@ -82,11 +82,12 @@ class TagManager {
             const tag = user.tags[tagIndex];
             if (tag.value != null) {
                 const val = JSON.parse(tag.value);
-                arr.push({name: user.name.value, data: val[0], ping: val[1]});
+                arr.push({name: user.name.value, data: val[0], ping: val[1], id: user.id.value});
             }
         });
         return arr;
     }
+
     add_tag (tagName) {
         var tagCell = this.sheet.getCell(1, 2 + this.tagCount);
         tagCell.value = tagName;
@@ -127,7 +128,7 @@ module.exports = {
             "tags ping <category>              | mentions users in a category that have mentions on",
             "tags search <tag>                 | not implemented yet",
             "tags removeCategory <Category>    | removes a category (Mod only)",
-            "tags remove <category> $<user>    | removes a users tag (Mod only)",
+            "tags remove <userID> <Category>   | removes a users tag (Mod only)",
             ],
     example: "",
     async init () {
@@ -167,9 +168,13 @@ module.exports = {
                 } else {message.channel.send("tag doesn't exist")}
             break;
             case 'remove': //remove your own tag or someone elses
-                if (args[1] != undefined) {
+                if (args[2] != undefined) {
                     if (message.guild.member(message.author).permissions.has('MANAGE_CHANNELS')) {
-                        tagMgr.remove_tag_user(message.guild.members.fetch(args[1]));
+                        if (!tagMgr.tagNames.includes(args[1])) {
+                            message.channel.send("tag doesn't exist");
+                            break;
+                        }
+                        tagMgr.remove_tag_user(message.guild.members.fetch(args[2]), args[1]);
                     } else {message.channel.send("you need to be an admin to use this command"); break;}
                 }
                 tagMgr.remove_tag_user(message.author,args[1]);
@@ -187,16 +192,12 @@ module.exports = {
                         m1 += tagStr + "\n";
                     })
                 } else {
-                    var category = undefined;
-                    for (var i = 1; i < args.length + 1; i++) {
-                        const subarray = args.slice(1,i).join(' ');
-                        if (tagMgr.tagNames.includes(subarray)){
-                            category = subarray;
-                            break;
-                        }
+                    var category = args[1];
+                    if (!tagMgr.tagNames.includes(category)) {
+                        message.channel.send("Category doesn't exist");
+                        break;
                     }
                     const arr = tagMgr.list_users_tag(category);
-                    console.log(arr);
                     const wName = 15, wData = 10, wPing = 6;
                     m1+= "Listing users for tag: [" + category + "]\n"
                     m1+= "[Name]".padEnd(wName) + " " + "[Data]".padEnd(wData)+"[Ping?]"+"\n";
@@ -254,17 +255,40 @@ module.exports = {
                     message.channel.send('tag already exists!');
                 }
             break;
+            case 'remCat':
             case 'removeCat':
             case 'removeCategory':
                 if (!message.guild.member(message.author).permissions.has('MANAGE_CHANNELS')) {
                     message.channel.send("you need to be an admin to use this command");
                 } else if (args[1] != undefined) {
+                    if (!tagMgr.tagNames.includes(category)) {
+                        message.channel.send("Category doesn't exist");
+                        break;
+                    }
                     tagMgr.rm_tag(args[1]);
                     message.channel.send("removed category: `" + args[1] + "`");
                 } else {
-                    message.channel.send("please specify a tag to remove");
+                    message.channel.send("please specify a category to remove");
                 }
 
+            break;
+            case 'ping':
+                if (args[1] == undefined) {
+                    message.channel.send("please specify a category to ping");
+                    break;
+                }
+                if (!tagMgr.tagNames.includes(category)) {
+                    message.channel.send("Category doesn't exist");
+                    break;
+                }
+                const arr = tagMgr.list_users_tag(args[1]);
+                const m = "mentioning Category: `" + args[1] + "`";
+                arr.forEach((e)=> {
+                    if (e.ping == "true") {
+                        m += "<@" + e.id + "> ";
+                    }
+                });
+                message.channel.send(m);
             break;
             default:
                 client.commands.get(client.aliasMap['help']).run(message, ['tags'], client);
