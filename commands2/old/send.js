@@ -4,6 +4,7 @@ module.exports = {
     description: "sends what you type to it",
     usage: "",
     example: "",
+    init(){},
     run(message, args, client, inputCommand) {
 
         

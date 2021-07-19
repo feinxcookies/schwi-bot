@@ -4,15 +4,16 @@ module.exports = {
     description: "converts an image to greyscale ascii, the image should be attached",
     usage: "ascii <image url or attchment> <options> (JSON format)\n options: w,h,invert,scale",
     example: "s.ascii ",
+    init(){},
     run(message, args, client, inputCommand) {
-        const https = require('https');
-        const fs = require('fs');
+    
         const Jimp = require('jimp');
         
         
 
-        var gscale = ' ░▒▓';
+        //var gscale = ' ░▒▓';
        // gscale = ' .,:+xX0$@';
+       var gscale = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,^'. ";
         const garray = gscale.split("");
 
         var url = '';
@@ -23,15 +24,15 @@ module.exports = {
             
             args.unshift(message.attachments.first().url);
             
+        
         }
         console.log(args);
         url = args[0];
         if (args.length == 3) {
-            url = args[2];
-            w = parseInt(args[0]);
-            h= parseInt(args[1]);
+            url = args[0];
+            w = parseInt(args[1]);
+            h= parseInt(args[2]);
         }
-        
         var arr = [];
         
         Jimp.read(url).then( (img) => {

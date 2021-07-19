@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const fs = require("fs"); // file system keke
-const secretmessage = "wow! a security flaw";
+
 
 const client = new Discord.Client();
 
@@ -10,42 +10,32 @@ require('dotenv').config();
 // init event
 client.on("ready", () => {
   // init alias => command file mapping
-
-  client.aliasMap = new Map();
-  client.commands = new Discord.Collection();
+  client.aliasMap = new Map(); // takes an alias and gives a command name
+  client.commands = new Discord.Collection(); // collection of commands
   client.commanddir = './commands2';
   client.commandFiles = fs.readdirSync(client.commanddir).filter(file => file.endsWith('.js'));
   for (const file of client.commandFiles) {
     const file_dir = `${client.commanddir}/${file}`;
-
-    fs.watchFile(file_dir, { interval: 1000 }, () => {
-
-      delete require.cache[require.resolve(file_dir)];
-      console.log(file_dir);
-      const command = require(file_dir);
+    var command = require(file_dir);
+    var init = ()=> {
       client.commands.set(command.name, command);
-      // adds everything in the alias field of a command to the map
-
       command.alias.forEach((val, _) => { client.aliasMap[val] = command.name });
-      // adds the base name as well
       client.aliasMap[command.name] = command.name;
+      command.init();
+    }
+    fs.watchFile(file_dir, { interval: 1000 }, () => {
+      delete require.cache[require.resolve(file_dir)];
+      command = require(file_dir);
+      console.log(file_dir);
+      init();
     });
-
-    const command = require(file_dir);
-    client.commands.set(command.name, command);
-    // adds everything in the alias field of a command to the map
-    command.alias.forEach((val, _) => { client.aliasMap[val] = command.name });
-    // adds the base name as well
-    client.aliasMap[command.name] = command.name;
+    init();
   }
 
   console.log(client.aliasMap);
   client.user.setStatus(`${client.config.prefix}help`)
   console.log("I am ready!");
 });
-
-
-
 
 // message event
 // message is a discord.js variable
@@ -60,7 +50,7 @@ client.on("message", (message) => {
     return;
   }
   //remove prefix
-  const args = message.content.slice(client.config.prefix.length).toLowerCase().trim().split(/ +/g); // splice to remove prefix, then split by spaces
+  const args = message.content.slice(client.config.prefix.length).trim().split(/ +/g); // splice to remove prefix, then split by spaces
 
   const inputCommand = args.shift().toLowerCase();
   // s.<blank> case

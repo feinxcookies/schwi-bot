@@ -4,10 +4,10 @@
   "description": "a discord bot",
   "main": "",
   "dependencies": {
-    "canvas": "^2.6.1",
-    "discord.js": "^12.5.1",
-    "dotenv": "^8.2.0",
-    "gm": "^1.23.1",
+    "discord.js": "^12.5.3",
+    "dotenv": "^8.6.0",
+    "google-spreadsheet": "^3.1.15",
+    "googleapis": "^82.0.0",
     "jimp": "^0.16.1"
   },
   "devDependencies": {},

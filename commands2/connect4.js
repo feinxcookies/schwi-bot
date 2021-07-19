@@ -2,8 +2,9 @@ module.exports = {
     name: 'connectFour',
     alias:['connectFour', 'c4', 'connect4'],
     description: "play connect four with someone",
-    usage: `connectfour`,
-    example: "s.c4 <column>",
+    usage:"connect4 <mention>",
+    example:"c4 @feinxcookies",
+    init(){},
     run(message, args, client) {
         var wEmoji = ':white_circle:';
         var firstEmoji = ':red_circle:';

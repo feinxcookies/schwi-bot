@@ -4,6 +4,7 @@ module.exports = {
     description: "lists emojis",
     usage: "",
     example: "",
+    init(){},
     run(message, args, client) {
         const e = message.guild.emojis;
         var m = '';

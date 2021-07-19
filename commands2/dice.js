@@ -4,6 +4,7 @@ module.exports = {
     description: "rolls some amount of different sized dice",
     usage: `roll {<amount>d<dice size>}`,
     example: "s.roll 5d20 3d10 1d6",
+    init(){},
     run(message, args, client) {
     // s.roll 1d20 2d4 etc
         // result: 2d20 :value, 2d4: value

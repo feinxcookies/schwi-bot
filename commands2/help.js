@@ -4,6 +4,7 @@ module.exports = {
     description: "gives help",
     usage: "help <command>",
     example: "help dice",
+    init(){},
     run(message, args, client) {
         var m = "```ini\n";
         
@@ -24,7 +25,8 @@ module.exports = {
                 m += "[" + command.name + "]\n";
                 m += "  aliases: " + command.alias + "\n";
                 m += "  description: " + command.description + "\n";
-                m += "  usage: " + client.config.prefix + command.usage + "\n";
+                const usg = Array.from(command.usage, (e) => "    " + client.config.prefix + e + "\n").join("");
+                m += "  usage: \n" + usg;
                 m += "  example: " + command.example + "\n";
             }
         }
