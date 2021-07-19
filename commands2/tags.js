@@ -36,14 +36,14 @@ class TagManager {
         this.init(this.sheet);
     }
     //async add_tag(message.author.id, args[1], data)
-    async add_tag_user(user, tagName, data) {
+    async add_tag_user(user, tagName, data, ping) {
         var target = this.userCells.find((userCell)=>userCell.id.value == user.id);
         if (target == undefined) {
             target = this.add_user(user);
         }
         // assume tag exists
         const index = this.tagNames.findIndex((str)=> str == tagName);
-        target.tags[index].value = JSON.stringify([data, false]);
+        target.tags[index].value = JSON.stringify([data, ping]);
         this.save_data();
     }
     add_user(user) {
@@ -156,14 +156,18 @@ module.exports = {
                 if (data == undefined) {
                     data = "empty";
                 }
-                if (!(ping == "true" || ping == "false")) {
+                if (ping == "true") {
+                    ping = true;
+                } else if (ping == "false") {
+                    ping = false;
+                } else {
                     message.channel.send("the ping field can only be true or false");
                     break;
                 }
 
                 if (tagMgr.tagNames.includes(category)) {
                     if (data == "" || data == []) {data = "empty"};
-                    tagMgr.add_tag_user(message.author, category, data);
+                    tagMgr.add_tag_user(message.author, category, data, ping);
                 message.channel.send(`added tag: \`${category}\` with data: \`${data}\` and ping?: \`${ping}\` for user: \`${message.author.username}\``);
                 } else {message.channel.send("Category doesn't exist")}
             break;
@@ -277,14 +281,15 @@ module.exports = {
                     message.channel.send("please specify a category to ping");
                     break;
                 }
-                if (!tagMgr.tagNames.includes(category)) {
+                if (!tagMgr.tagNames.includes(args[1])) {
                     message.channel.send("Category doesn't exist");
                     break;
                 }
                 const arr = tagMgr.list_users_tag(args[1]);
-                const m = "mentioning Category: `" + args[1] + "`";
+                var m = "mentioning Category: `" + args[1] + "`: ";
+                console.log(arr);
                 arr.forEach((e)=> {
-                    if (e.ping == "true") {
+                    if (e.ping == true) {
                         m += "<@" + e.id + "> ";
                     }
                 });
