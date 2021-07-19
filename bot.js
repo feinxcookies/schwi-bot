@@ -33,12 +33,10 @@ client.on("ready", () => {
   }
 
   console.log(client.aliasMap);
-  client.user.setStatus(`${client.config.prefix}help`)
+  client.user.setActivity(`${client.config.prefix}help`)
   console.log("I am ready!");
 });
 
-// message event
-// message is a discord.js variable
 client.on("message", (message) => {
   if (!message.content.startsWith(client.config.prefix)) return; // check prefix
   if (message.author.bot) {
