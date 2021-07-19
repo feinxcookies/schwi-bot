@@ -13,8 +13,19 @@ class TagManager {
     async init (googleSheet) {
         this.sheet = googleSheet;
         await this.sheet.loadCells({startRowIndex: 0, endRowIndex: googleSheet.rowCount, startColumnIndex:0, endColumnIndex: googleSheet.columnCount});
-        this.userCount = this.sheet.getCell(0,0).value;
-        this.tagCount = this.sheet.getCell(0,2).value;
+        //this.userCount = this.sheet.getCell(0,0).value;
+        this.userCount = 0;
+        var val = this.sheet.getCell(2, 0);
+        while (val.value != null) {
+            this.userCount++;
+            val = this.sheet.getCell(2 + this.userCount,0);
+        }
+        this.tagCount = 0;
+        var val = this.sheet.getCell(1, 2);
+        while (val.value != null) {
+            this.tagCount++;
+            val = this.sheet.getCell(1, 2 + this.tagCount);
+        }
         this.tagCells = Array.from({ length: this.tagCount}, (_,j)=>this.sheet.getCell(1,2 + j)).sort((a,b) => a.value.localeCompare(b.value));
         this.tagNames = Array.from(this.tagCells, (tagCell) => {return tagCell.value});
         this.userCells = Array.from({ length: this.userCount}, (_,i)=>{
@@ -52,7 +63,7 @@ class TagManager {
         userCell.name.value = user.username;
         userCell.id = this.sheet.getCell(2 + this.userCount, 1);
         userCell.id.value = user.id;
-        userCell.tags = Array.from({ length: this.tagCount}, (_,j)=>this.sheet.getCell(2 + this.userCount, 2 + j));
+        userCell.tags = Array.from(this.tagCells, (tagCell,j) => this.sheet.getCell(2 + this.userCount,tagCell.columnIndex));
         this.userCount++;
         return userCell;
     }
@@ -179,9 +190,11 @@ module.exports = {
                             break;
                         }
                         tagMgr.remove_tag_user(message.guild.members.fetch(args[2]), args[1]);
+                        message.channel.send("Removed tag: `" + args[1] + "` from user: `" + args[2]);
                     } else {message.channel.send("you need to be an admin to use this command"); break;}
                 }
                 tagMgr.remove_tag_user(message.author,args[1]);
+                message.channel.send("Removed tag: `" + args[1] + "` from user: `" + message.author.name);
             break;
             case 'removeuser': //remove a users profile
             if (message.guild.member(message.author).permissions.has('MANAGE_CHANNELS')){
@@ -238,6 +251,7 @@ module.exports = {
                 })
                 m1 += '```';
                 message.channel.send(m1);
+
             break;
             case 'addCategory':
             case 'addCat':
