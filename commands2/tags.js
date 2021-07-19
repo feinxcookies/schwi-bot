@@ -161,11 +161,11 @@ module.exports = {
                     break;
                 }
 
-                if (category != undefined) {
+                if (tagMgr.tagNames.includes(category)) {
                     if (data == "" || data == []) {data = "empty"};
                     tagMgr.add_tag_user(message.author, category, data);
                 message.channel.send(`added tag: \`${category}\` with data: \`${data}\` and ping?: \`${ping}\` for user: \`${message.author.username}\``);
-                } else {message.channel.send("tag doesn't exist")}
+                } else {message.channel.send("Category doesn't exist")}
             break;
             case 'remove': //remove your own tag or someone elses
                 if (args[2] != undefined) {
