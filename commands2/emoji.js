@@ -9,9 +9,9 @@ module.exports = {
         const e = message.guild.emojis;
         var m = '';
 
-        e.cache.forEach(element => {
+        e.cache.forEach((element, i) => {
             var str = e.resolveIdentifier(element);
-            if (m.length + str.length + 3> 2000) {
+            if (i % 24 == 0 ) {
                 message.channel.send(m);
                 m = '';
             }
@@ -24,7 +24,6 @@ module.exports = {
             //message.channel.send(`<${e.resolveIdentifier(element)}>`);
             //:${e.resolveID(element)}
             //message.channel.send(`${element}`);
-            
             
         });
         message.channel.send(m);
