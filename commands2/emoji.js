@@ -8,11 +8,13 @@ module.exports = {
     run(message, args, client) {
         const e = message.guild.emojis;
         var m = '';
-
-        e.cache.forEach((element, i) => {
+        var j = 0;
+        e.cache.forEach((element) => {
             var str = e.resolveIdentifier(element);
-            if (i % 24 == 0 ) {
+            j++;
+            if (j % 24 == 0 ) {
                 message.channel.send(m);
+                j = 0;
                 m = '';
             }
             if (element.animated) {
