@@ -11,12 +11,11 @@ module.exports = {
         var j = 0;
         e.cache.forEach((element) => {
             var str = e.resolveIdentifier(element);
-            j++;
             if (j % 24 == 0 ) {
                 message.channel.send(m);
                 j = 0;
                 m = '';
-            }
+            } else {j++};
             if (element.animated) {
                 m += `<${str}>`;
             } else {

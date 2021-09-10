@@ -11,9 +11,9 @@ module.exports = {
         
         
 
-        //var gscale = ' ░▒▓';
-       // gscale = ' .,:+xX0$@';
-       var gscale = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,^'. ";
+        var gscale = ' ░▒▓';
+        // gscale = ' .,:+xX0$@';
+        // var gscale = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,^'. ";
         const garray = gscale.split("");
 
         var url = '';
