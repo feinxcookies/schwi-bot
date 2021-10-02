@@ -145,7 +145,7 @@ module.exports = {
             ],
     example: "",
     async init () {
-        doc = new GoogleSpreadsheet('1l_BQXIBLxaZ9-xkKOJ0-EsoY25ESN0gYx5pHICeK7CY');
+        doc = new GoogleSpreadsheet('1l_BQXIBLxaZ9-xkKOJ0-EsoY25ESN0gYx5pHICeK7CY'); // the actual sheet is still private so ppl have to ask permission to view
         await doc.useServiceAccountAuth({client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL, private_key: process.env.GOOGLE_PRIVATE_KEY});
         await doc.loadInfo();
         console.log("opened sheet: " + doc.title);
@@ -219,12 +219,12 @@ module.exports = {
                 } else {
                     var category = args[1].toLowerCase();
                     var tagIndex = tagMgr.lowerTagNames.findIndex((str)=>str == category);
-                    if (tagIndex == undefined) {
-                        message.channel.send("Category doesn't exist");
+                    if (tagIndex == -1) {
+                        message.channel.send(`Category doesn't exist`);
                         break;
                     };
                     const arr = tagMgr.list_users_tag(category);
-                    const wName = 15, wData = 15, wPing = 6;
+                    const wName = 20, wData = 20, wPing = 6;
                     m1+= "[" + tagMgr.tagCells[tagIndex].value + "]\n"
                     m1+= "Name".padEnd(wName) + " " + "Data".padEnd(wData)+"Ping?"+"\n";
                     m1+= "\n".padStart(wName + 1 + wData + wPing, '=');
