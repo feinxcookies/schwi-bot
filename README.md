@@ -2,7 +2,7 @@
 
 # Schwi Bot
 
-A bot made by [feinxcookies](https://github.com/feinxcookies)
+A [discord] bot made by [feinxcookies](https://github.com/feinxcookies)
 
 ## How to run
 0. Install `npm`
