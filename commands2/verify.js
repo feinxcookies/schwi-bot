@@ -7,6 +7,7 @@ const seed = process.env.SEED;
 const sheetDiscordColumn = 2;
 const sheetVerifiedColumn = 6;
 const verifiedRoleId = "552784361104343040";
+var doc;
 var sheet;
 async function init () {
     doc = new GoogleSpreadsheet('1_rbv-zzD7sJFKX4nPaJA1M9NdCi2x8hzwNEHEkAbJYc'); // the actual sheet is still private so ppl have to ask permission to view
@@ -28,6 +29,7 @@ async function run(message, args, client, inputCommand) {
                 if (args[0]==getPad(message.author.tag.toLowerCase() + seed, 6)) {
                     // add to database
                     // scan discord names for a match
+                    await doc.loadInfo();
                     for (var i = 1; i < sheet.rowCount; i++) {
                         if (sheet.getCell(i,sheetDiscordColumn).value == null) {
                             
@@ -36,22 +38,23 @@ async function run(message, args, client, inputCommand) {
                             sheet.getCell(i,sheetVerifiedColumn).value = "true";
                             await sheet.saveUpdatedCells();
                             message.guild.member(message.author).roles.add(verifiedRoleId);
-                            message.channel.send("verification successful!")
+                            message.channel.send(`verification successful <@${message.author.id}>`)
+                            message.delete({ timeout:10000});
                             return;
-                        } else {
-                            console.log(sheet.getCell(i,sheetDiscordColumn).value.toLowerCase());
                         }
                     }
-                    message.channel.send("couldnt find username in spreadsheet!")
+                    message.channel.send(`verification unsuccessful <@${message.author.id}>. please make sure your details are correct`)
                 } else {
-                    message.channel.send("verification unsuccessful, please make sure your details are correct")
+                    message.channel.send(`verification unsuccessful <@${message.author.id}>. please make sure your details are correct`)
                 }
             break;
         }
+        message.delete({ timeout:10000});
     } else {
-        await message.channel.send("Make sure to include the code you received from your email. "
+        await message.channel.send(`Make sure to include the code you received from your email <@${message.author.id}>.`
         +"If you havent received such an email make sure you've filled out the form: https://forms.gle/3hhEv4Z9DDwVAKMJA"
-        +"and check your student email (could be in junk mail) for further instructions").then(r => r.delete({ timeout: 60000 }))
+        +" and check your student email (could be in junk mail) for further instructions")
+        message.delete({ timeout:10000});
     }
 }
 
@@ -61,7 +64,7 @@ module.exports = {
     description: "used to verify members, check your email for the code after filling out the form: https://forms.gle/3hhEv4Z9DDwVAKMJA",
     usage: "verify XXXXXX",
     example: "verify 123456",
-    allowedChannels:["497657688843354112"],
+    allowedChannels:["932883883211505694"],
     init:init,
     run:run,
 }

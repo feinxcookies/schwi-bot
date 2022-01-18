@@ -3,7 +3,7 @@ const fs = require("fs"); // file system keke
 const client = new Discord.Client();
 client.config = require("./config.json"); // contains discord token and saves discord prefix
 require('dotenv').config();
-const disabled_channels = ["497657688843354112"];
+const disabled_channels = ["932883883211505694"];
 // init event
 client.on("ready", () => {
   // init alias => command file mapping
