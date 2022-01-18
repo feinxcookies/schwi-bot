@@ -1,6 +1,5 @@
 const {Collection, Invite, CategoryChannel} = require('discord.js');
 const {GoogleSpreadsheet} = require('google-spreadsheet');
-const { grayscale } = require('jimp');
 require('dotenv').config();
 "use strict";
 class TagManager {
@@ -13,7 +12,8 @@ class TagManager {
     userCells;
     async init (googleSheet) {
         this.sheet = googleSheet;
-        await this.sheet.loadCells({startRowIndex: 0, endRowIndex: googleSheet.rowCount, startColumnIndex:0, endColumnIndex: googleSheet.columnCount});
+        await this.sheet.loadCells({startRowIndex: 0, endRowIndex: googleSheet.rowCount, 
+                                    startColumnIndex:0, endColumnIndex: googleSheet.columnCount});
         //this.userCount = this.sheet.getCell(0,0).value;
         this.userCount = 0;
         var val = this.sheet.getCell(2, 0);
@@ -134,7 +134,7 @@ module.exports = {
     alias:['tags'],
     description: "stores data about different categories. Useful for storing usernames",
     usage: ["tags profile <user>               | lists categories that you have data stored to",
-            "tags add <category> <tag> <ping>  | adds data for a given category to your profile, you can use this to edit what's already stored",
+            "tags add <category> <tag> <ping>  | adds data for a given category to your profile, can edit existing data",
             "tags remove <category>            | removes a category from your profile",
             "tags list                         | lists categories that are available to add",
             "tags addCategory <Category>       | adds a category for users to use",

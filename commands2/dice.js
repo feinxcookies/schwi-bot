@@ -3,7 +3,7 @@ module.exports = {
     alias:['roll'],
     description: "rolls some amount of different sized dice",
     usage: `roll {<amount>d<dice size>}`,
-    example: "s.roll 5d20 3d10 1d6",
+    example: "roll 5d20 3d10 1d6",
     init(){},
     run(message, args, client) {
     // s.roll 1d20 2d4 etc

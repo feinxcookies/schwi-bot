@@ -2,8 +2,8 @@ module.exports = {
     name: 'connectFour',
     alias:['connectFour', 'c4', 'connect4'],
     description: "play connect four with someone",
-    usage:"connect4 <mention>",
-    example:"c4 @feinxcookies",
+    usage:"connect4 <@user>",
+    example:"",
     init(){},
     run(message, args, client) {
         var wEmoji = ':white_circle:';
@@ -17,8 +17,7 @@ module.exports = {
             message.channel.send('ConnectFour: Please mention who you want to vs in connect 4 uwu');
             return;
         }
-        
-        //var tiles = Array(7).fill([]); <-this is fucked
+
         var tiles = [[],[],[],[],[],[],[]];
         // tiles [col][row]
         // fill with white

@@ -1,12 +1,9 @@
 const Discord = require("discord.js");
 const fs = require("fs"); // file system keke
-
-
 const client = new Discord.Client();
-
 client.config = require("./config.json"); // contains discord token and saves discord prefix
 require('dotenv').config();
-
+const disabled_channels = ["861190307282157580"];
 // init event
 client.on("ready", () => {
   // init alias => command file mapping
@@ -31,41 +28,46 @@ client.on("ready", () => {
     });
     init();
   }
-
   console.log(client.aliasMap);
   client.user.setActivity(`${client.config.prefix}help`)
   console.log("I am ready!");
 });
 
 client.on("message", (message) => {
-  if (!message.content.startsWith(client.config.prefix)) return; // check prefix
-  if (message.author.bot) {
-    if (message.author.id == 422684380100689921) {
-      message.channel.send("I don't talk to myself sorry");
-      return;
-    }
-    message.channel.send("I don't talk to other bots, sorry");
-    return;
-  }
+  if (!message.content.toLowerCase().startsWith(client.config.prefix)) return; // check prefix
+  if (message.author.bot) return;
   //remove prefix
   const args = message.content.slice(client.config.prefix.length).trim().split(/ +/g); // splice to remove prefix, then split by spaces
 
   const inputCommand = args.shift().toLowerCase();
   // s.<blank> case
   if (inputCommand.length == 0) {
-    message.channel.send(`usage: ${prefix}<command> <args> \n for a list of commands use ${client.config.prefix}help`);
+    message.channel.send(`usage: ${client.config.prefix}\`command\` \`args\` \n for a list of commands use ${client.config.prefix}help\``);
     return;
   }
+  // check input command exists
 
-  // try parse input command
   if (!client.commands.has(client.aliasMap[inputCommand])) return;
+  const cmdFile = client.commands.get(client.aliasMap[inputCommand]);
+   //check if command is enabled for given channel
+   if (disabled_channels.includes(message.channel.id) && 
+      (cmdFile.allowedChannels == null || !cmdFile.allowedChannels.includes(message.channel.id)) ) return;
 
-  try {
-    client.commands.get(client.aliasMap[inputCommand]).run(message, args, client, inputCommand);
-  } catch (error) {
-    console.error(error);
-    // message.channel.send(`ERROR: ${error}`);
-  }
+
+  if (cmdFile.dm != true && message.channel.type == "dm") return;
+  if (args[0] == "help") {
+    client.commands.get(client.aliasMap['help']).run(message, [inputCommand], client);
+    return;
+  } 
+
+    try {
+      cmdFile.run(message, args, client, inputCommand);
+    } catch (error) {
+      console.error(error);
+      // message.channel.send(`ERROR: ${error}`);
+    }
+  
+
 }
 
 

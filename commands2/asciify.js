@@ -1,9 +1,9 @@
 module.exports = {
     name: 'asciify',
     alias:['ascii', 'asciify'],
-    description: "converts an image to greyscale ascii, the image should be attached",
-    usage: "ascii <image url or attchment> <options> (JSON format)\n options: w,h,invert,scale",
-    example: "s.ascii ",
+    description: "converts an image to greyscale ascii, the image should be attached or a url provided",
+    usage: "ascii <width> <height> <image url or attachment>",
+    example: "",
     init(){},
     run(message, args, client, inputCommand) {
     
@@ -27,7 +27,7 @@ module.exports = {
             
         
         }
-        console.log(args);
+        //console.log(args);
         url = args[0];
         if (args.length == 3) {
             url = args[0];
