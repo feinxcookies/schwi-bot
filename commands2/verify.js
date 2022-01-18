@@ -6,7 +6,7 @@ require('dotenv').config();
 const seed = process.env.SEED;
 const sheetDiscordColumn = 2;
 const sheetVerifiedColumn = 6;
-const verifiedRoleId = "932585726535684098";
+const verifiedRoleId = "552784361104343040";
 var sheet;
 async function init () {
     doc = new GoogleSpreadsheet('1_rbv-zzD7sJFKX4nPaJA1M9NdCi2x8hzwNEHEkAbJYc'); // the actual sheet is still private so ppl have to ask permission to view
@@ -61,7 +61,7 @@ module.exports = {
     description: "used to verify members, check your email for the code after filling out the form: https://forms.gle/3hhEv4Z9DDwVAKMJA",
     usage: "verify XXXXXX",
     example: "verify 123456",
-    allowedChannels:["861190307282157580"],
+    allowedChannels:["497657688843354112"],
     init:init,
     run:run,
 }
