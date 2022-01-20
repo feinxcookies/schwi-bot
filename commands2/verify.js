@@ -18,6 +18,7 @@ async function init () {
         sheet.loadCells({startRowIndex: 0, endRowIndex: sheet.rowCount, startColumnIndex:0, endColumnIndex: sheet.columnCount});
 }
 async function run(message, args, client, inputCommand) {
+    try {
     if (args.length == 1) {
         switch (args[0]) {
             case "setup":
@@ -39,7 +40,7 @@ async function run(message, args, client, inputCommand) {
                             await sheet.saveUpdatedCells();
                             message.guild.member(message.author).roles.add(verifiedRoleId);
                             message.channel.send(`verification successful <@${message.author.id}>`)
-                            message.delete({ timeout:10000});
+                            message.delete({ timeout:7000});
                             return;
                         }
                     }
@@ -49,12 +50,16 @@ async function run(message, args, client, inputCommand) {
                 }
             break;
         }
-        message.delete({ timeout:10000});
+        message.delete({ timeout:7000});
     } else {
         await message.channel.send(`Make sure to include the code you received from your email <@${message.author.id}>.`
         +"If you havent received such an email make sure you've filled out the form: https://forms.gle/3hhEv4Z9DDwVAKMJA"
         +" and check your student email (could be in junk mail) for further instructions")
         message.delete({ timeout:10000});
+    }
+    } catch (e){
+        message.channel.send(`something went wrong, try again later`);
+        message.delete({ timeout:70000});
     }
 }
 
