@@ -10,7 +10,7 @@ const verifiedRoleId = "552784361104343040";
 var doc;
 var sheet;
 async function init () {
-    doc = new GoogleSpreadsheet('1_rbv-zzD7sJFKX4nPaJA1M9NdCi2x8hzwNEHEkAbJYc'); // the actual sheet is still private so ppl have to ask permission to view
+    doc = new GoogleSpreadsheet('12lhHiN9Xbh-lF2N2-ii9bD6YAUZ5wNqC0UYqH7xQlYU'); // the actual sheet is still private so ppl have to ask permission to view
         await doc.useServiceAccountAuth({client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL, private_key: process.env.GOOGLE_PRIVATE_KEY});
         await doc.loadInfo();
         console.log("opened sheet: " + doc.title);
