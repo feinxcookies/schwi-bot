@@ -15,14 +15,12 @@ async function init () {
         await doc.loadInfo();
         console.log("opened sheet: " + doc.title);
         sheet = doc.sheetsByIndex[0];
-        sheet.loadCells({startRowIndex: 0, endRowIndex: sheet.rowCount, startColumnIndex:0, endColumnIndex: sheet.columnCount});
+        await sheet.loadCells({startRowIndex: 0, endRowIndex: sheet.rowCount, startColumnIndex:0, endColumnIndex: sheet.columnCount});
 }
 async function run(message, args, client, inputCommand) {
-    doc.resetLocalCache();
     await doc.loadInfo();
     sheet = doc.sheetsByIndex[0];
-    sheet.loadCells({startRowIndex: 0, endRowIndex: sheet.rowCount, startColumnIndex:0, endColumnIndex: sheet.columnCount});
-    try {
+    await sheet.loadCells({startRowIndex: 0, endRowIndex: sheet.rowCount, startColumnIndex:0, endColumnIndex: sheet.columnCount});
     if (args.length == 1) {
         switch (args[0]) {
             case "setup":
@@ -60,11 +58,7 @@ async function run(message, args, client, inputCommand) {
         +" and check your student email (could be in junk mail) for further instructions")
         message.delete({ timeout:10000});
     }
-    } catch (e){
-        console.error('ERROR: ', e.message);
-        message.channel.send(`something went wrong, try again later`);
-        message.delete({ timeout:70000});
-    }
+
 }
 
 module.exports = {
