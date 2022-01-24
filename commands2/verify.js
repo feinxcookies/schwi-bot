@@ -31,6 +31,8 @@ async function run(message, args, client, inputCommand) {
                     // add to database
                     // scan discord names for a match
                     await doc.loadInfo();
+                    sheet = doc.sheetsByIndex[0];
+                    sheet.loadCells({startRowIndex: 0, endRowIndex: sheet.rowCount, startColumnIndex:0, endColumnIndex: sheet.columnCount});
                     for (var i = 1; i < sheet.rowCount; i++) {
                         if (sheet.getCell(i,sheetDiscordColumn).value == null) {
                             
@@ -58,6 +60,7 @@ async function run(message, args, client, inputCommand) {
         message.delete({ timeout:10000});
     }
     } catch (e){
+        console.error('ERROR: ', ex.message);
         message.channel.send(`something went wrong, try again later`);
         message.delete({ timeout:70000});
     }
