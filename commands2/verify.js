@@ -18,6 +18,10 @@ async function init () {
         sheet.loadCells({startRowIndex: 0, endRowIndex: sheet.rowCount, startColumnIndex:0, endColumnIndex: sheet.columnCount});
 }
 async function run(message, args, client, inputCommand) {
+    doc.resetLocalCache();
+    await doc.loadInfo();
+    sheet = doc.sheetsByIndex[0];
+    sheet.loadCells({startRowIndex: 0, endRowIndex: sheet.rowCount, startColumnIndex:0, endColumnIndex: sheet.columnCount});
     try {
     if (args.length == 1) {
         switch (args[0]) {
@@ -30,9 +34,6 @@ async function run(message, args, client, inputCommand) {
                 if (args[0]==getPad(message.author.tag.toLowerCase() + seed, 6)) {
                     // add to database
                     // scan discord names for a match
-                    await doc.loadInfo();
-                    sheet = doc.sheetsByIndex[0];
-                    sheet.loadCells({startRowIndex: 0, endRowIndex: sheet.rowCount, startColumnIndex:0, endColumnIndex: sheet.columnCount});
                     for (var i = 1; i < sheet.rowCount; i++) {
                         if (sheet.getCell(i,sheetDiscordColumn).value == null) {
                             
@@ -60,7 +61,7 @@ async function run(message, args, client, inputCommand) {
         message.delete({ timeout:10000});
     }
     } catch (e){
-        console.error('ERROR: ', ex.message);
+        console.error('ERROR: ', e.message);
         message.channel.send(`something went wrong, try again later`);
         message.delete({ timeout:70000});
     }
