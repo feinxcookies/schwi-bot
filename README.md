@@ -9,7 +9,9 @@ A [discord] bot made by [feinxcookies](https://github.com/feinxcookies)
 1. Run `npm install discord.js`
 2. Ask `feinxcookies` for the `.env` file. it is used with the `dotenv` package to pass in environment variables
 3. Run `node bot.js`
-
+## verify command
+CREDITS TO https://github.com/mtsev/seba
+google excel script + discord bot script adapted from there
 ## tags command
 the tags command uses google sheets as database.
 
