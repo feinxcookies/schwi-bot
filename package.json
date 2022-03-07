@@ -6,7 +6,7 @@
   "dependencies": {
     "discord.js": "^12.5.3",
     "dotenv": "^8.6.0",
-    "google-spreadsheet": "^3.1.15",
+    "google-spreadsheet": "^3.2.0",
     "googleapis": "^82.0.0",
     "jimp": "^0.16.1"
   },
